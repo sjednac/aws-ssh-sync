@@ -18,7 +18,9 @@ SSHTarget = namedtuple(
 
 def _ec2_instances(config, region):
     """Return a list of running instance descriptors for a given region"""
-    ec2 = boto3.client("ec2", region_name=region)
+    session = boto3.session.Session(profile_name=config.profile)
+
+    ec2 = session.client("ec2", region_name=region)
 
     response = ec2.describe_instances(
         Filters=[
@@ -118,8 +120,11 @@ def _parse_config(*args):
 
     # AWS
     aws_group = parser.add_argument_group("AWS")
+    aws_group.add_argument("-p", "--profile",
+                           help="Use specific AWS profile. Falls back to AWS_PROFILE, then 'default'.",
+                           **env_value("AWS_PROFILE", default="default"))
     aws_group.add_argument("-r", "--region",
-                           help="Connect to region(s). Falls back to AWS_REGION, if not specified.",
+                           help="Connect to region(s). Falls back to AWS_REGION.",
                            nargs="+",
                            **env_value("AWS_REGION", map_env_value=lambda x: [x]))
 
@@ -131,10 +136,10 @@ def _parse_config(*args):
 
     # SSH
     ssh_group = parser.add_argument_group("SSH")
-    ssh_group.add_argument("-p", "--name-prefix",
+    ssh_group.add_argument("-P", "--name-prefix",
                            help="Add a prefix to all host identifiers.",
                            default="")
-    ssh_group.add_argument("-u", "--user",
+    ssh_group.add_argument("-U", "--user",
                            help="Sign in as user.",
                            default="ec2-user")
     ssh_group.add_argument("-S", "--skip-strict-host-checking",

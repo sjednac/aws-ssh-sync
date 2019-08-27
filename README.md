@@ -8,7 +8,7 @@ Using a virtual [pipenv](https://github.com/pypa/pipenv) environment is recommen
 
 To get the full list of options:
 ```bash
-pipenv run ./aws_ssh_sync.py -h
+pipenv run ./aws_ssh_sync.py --help
 ```
 
 ### Preview
@@ -16,18 +16,18 @@ pipenv run ./aws_ssh_sync.py -h
 The easiest way to get a **preview** of the current config in AWS is to print the output directly to `stdout`:
 
 ```bash
-AWS_PROFILE=<profile_id> pipenv run ./aws_ssh_sync.py --region <region>
+pipenv run ./aws_ssh_sync.py --profile <profile> --region <region>
 ```
 
 ### Utilising the 'Include' directive
 
-If you want to keep the generated config **separately**, then you can write it to a dedicated file and `Include` it in the main config. The base use-case is as follows:
+If you want to **isolate** the generated config, you can write it to a dedicated file, and `Include` it in the main config. The base use-case is as follows:
 
 ```bash
-AWS_PROFILE=<profile_id> pipenv run ./aws_ssh_sync.py --region <region> > ~/.ssh/config.d/<some_file>
+pipenv run ./aws_ssh_sync.py --profile <profile> --region <region> > ~/.ssh/config.d/<some_file>
 ```
 
-To extend your `~/.ssh/config` add the following:
+To extend your `~/.ssh/config`, add the following line:
 
 ```
 Include config.d/*

@@ -99,10 +99,10 @@ def test_extended_config_to_stdout(ec2_stub, ec2_region_name, capsys):
     )
 
     aws_ssh_sync.main(
-        "-k", "test_key",
-        "-u", "tester",
-        "-p", "test_prefix_",
         "-r", ec2_region_name,
+        "-k", "test_key",
+        "-P", "test_prefix_",
+        "-U", "tester",
         "-S"
     )
 

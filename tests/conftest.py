@@ -19,7 +19,9 @@ def ec2_client(ec2_region_name):
 
 @pytest.fixture(autouse=True)
 def ec2_client_mock(ec2_client, monkeypatch):
-    monkeypatch.setattr(boto3, "client", MagicMock(return_value=ec2_client))
+    monkeypatch.setattr(boto3.session.Session,
+                        "client",
+                        MagicMock(return_value=ec2_client))
 
 
 @pytest.fixture(autouse=True)
