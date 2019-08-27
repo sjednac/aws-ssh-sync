@@ -3,10 +3,13 @@
 import aws_ssh_sync
 
 
-def test_default_config_to_stdout(ec2_stub, ec2_region_name, capsys):
+def test_default_config_to_stdout(ec2_stub, ec2_region_name, capsys, monkeypatch):
+
+    monkeypatch.setenv("AWS_PROFILE", "default")
+    monkeypatch.setenv("AWS_REGION", ec2_region_name)
 
     ec2_stub.add_response(
-        'describe_instances',
+        "describe_instances",
         expected_params={
             "Filters": [
                 {"Name": "instance-state-name", "Values": ["running"]}
@@ -49,17 +52,17 @@ def test_default_config_to_stdout(ec2_stub, ec2_region_name, capsys):
 ## {ec2_region_name}
 
 ### i-2
-Host default_clusterfoo0
+Host clusterfoo0
 \tHostName 192.168.0.2
 \tUser ec2-user
 
 ### i-3
-Host default_clusterfoo1
+Host clusterfoo1
 \tHostName 192.168.0.3
 \tUser ec2-user
 
 ### i-1
-Host default_i-1
+Host i-1
 \tHostName 192.168.0.1
 \tUser ec2-user
 
@@ -69,7 +72,7 @@ Host default_i-1
 
 def test_extended_config_to_stdout(ec2_stub, ec2_region_name, capsys):
     ec2_stub.add_response(
-        'describe_instances',
+        "describe_instances",
         expected_params={
             "Filters": [
                 {"Name": "instance-state-name", "Values": ["running"]}
@@ -99,6 +102,7 @@ def test_extended_config_to_stdout(ec2_stub, ec2_region_name, capsys):
         "-k", "test_key",
         "-u", "tester",
         "-p", "test_prefix_",
+        "-r", ec2_region_name,
         "-S"
     )
 
@@ -126,4 +130,36 @@ Host test_prefix_servicenode1
 \tUserKnownHostsFile=/dev/null
 
 # END [test_key]
+"""
+
+
+def test_no_instances_to_stdout(ec2_stub, ec2_region_name, capsys):
+
+    ec2_stub.add_response(
+        "describe_instances",
+        expected_params={
+            "Filters": [
+                {"Name": "instance-state-name", "Values": ["running"]}
+            ]
+        },
+        service_response={
+            "Reservations": [
+            ]
+        }
+    )
+
+    aws_ssh_sync.main(
+        "-r", ec2_region_name
+    )
+
+    out, err = capsys.readouterr()
+
+    assert err == ""
+    assert out == f"""\
+# BEGIN [default]
+# Generated automatically by `aws_ssh_sync.py`.
+
+## {ec2_region_name}
+
+# END [default]
 """
