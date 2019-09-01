@@ -5,7 +5,8 @@ Generate `ssh_config` files, based on current EC2 state.
 ## Features
 
 * Connect to one or more regions at once.
-* Name hosts using tags or instance ids. Index name duplicates (e.g. autoscaling groups) using instance launch time.
+* Name hosts using tags or instance ids. Index name duplicates (e.g. in autoscaling groups) using instance launch time order.
+* Use public or private IPs.
 * Skip strict host checking, if needed (e.g. internal autoscaling groups).
 * Write to `stdout` or a [master file with config-key substitution](#file-output). Useful for working with tools, that don't support the `Include` directive.
 

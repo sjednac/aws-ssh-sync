@@ -12,7 +12,7 @@ from functools import reduce
 
 SSHTarget = namedtuple(
     'SSHTarget',
-    'id launch_time name name_index host_name user strict_host_key_checking'
+    'id launch_time name name_index host user strict_host_key_checking'
 )
 
 
@@ -49,12 +49,25 @@ def _ssh_target(config, instance):
         else:
             return base_name
 
+    def host(instance):
+        public_addr = instance["PublicIpAddress"] if "PublicIpAddress" in instance else None
+        private_addr = instance["PrivateIpAddress"]
+
+        if config.address == "public_private":
+            return public_addr if public_addr else private_addr
+        elif config.address == "public":
+            return public_addr
+        elif config.address == "private":
+            return private_addr
+        else:
+            assert False, f"Invalid address selector: {config.address}"
+
     return SSHTarget(
         id=instance['InstanceId'],
         launch_time=instance['LaunchTime'],
         name=name(instance),
         name_index=None,
-        host_name=instance['PrivateIpAddress'],
+        host=host(instance),
         user=config.user,
         strict_host_key_checking=not config.skip_strict_host_checking
     )
@@ -84,7 +97,9 @@ def _ssh_targets(config, region):
 
     targets_raw = [_ssh_target(config, instance)
                    for instance in _ec2_instances(config, region)]
-    targets_sorted = sorted(targets_raw, key=lambda t: (t.name, t.launch_time))
+    targets_filtered = [target for target in targets_raw if target.host]
+    targets_sorted = sorted(
+        targets_filtered, key=lambda t: (t.name, t.launch_time))
     targets_indexed = reduce(lambda acc, target: acc + [add_index(target, acc[-1] if len(acc) > 0 else None)],
                              targets_sorted, [])
     targets_renamed = [change_name(target) for target in targets_indexed]
@@ -215,6 +230,10 @@ def _parse_config(*args):
                            help="Connect to region(s). Falls back to AWS_REGION.",
                            nargs="+",
                            **env_value("AWS_REGION", map_env_value=lambda x: [x]))
+    aws_group.add_argument("-a", "--address",
+                           help="Define how EC2 address resoultuon should work.",
+                           default="public_private",
+                           choices=["public_private", "public", "private"])
 
     # Output
     output_group = parser.add_argument_group("Output")
@@ -257,7 +276,7 @@ def main(*args):
             for target in _ssh_targets(config, region):
                 out(f"### {target.id}")
                 out(f"Host {target.name}")
-                out(f"\tHostName {target.host_name}")
+                out(f"\tHostName {target.host}")
                 if target.user:
                     out(f"\tUser {target.user}")
                 if not target.strict_host_key_checking:
