@@ -33,4 +33,20 @@ To extend your `~/.ssh/config`, add the following line:
 Include config.d/*
 ```
 
-**NOTE:** Some tools may have trouble with the `Include` directive.
+### Working with a single config file
+
+Splitting config into multiple, small files keeps things elegant and clean - you should probably stick to that, if you can. 
+
+Unfortunatelly, some tools may still have trouble with the `Include` directive itself. If you want to use a single file (e.g. `~/.ssh/config`) for keeping all configuration, then you can specify the `--output-file` together with a `--config-key`:
+
+```bash
+pipenv run ./aws_ssh_sync.py --profile <profile> --region <region> --config-key <key> --output-file <path>
+``` 
+
+Behaviour:
+
+* Configuration is written to the `--output-file` rather than `stdout`.
+* If the file doesn't exist, then it will be created.
+* If a section identified by `--config-key` exists, then it will be replaced. 
+* If no `--config-key` was found, then a new section will be appended to the file.
+* **No backup file is created at the moment.**

@@ -3,6 +3,7 @@
 
 import boto3
 import os
+import re
 import sys
 
 from argparse import ArgumentParser, SUPPRESS
@@ -60,7 +61,7 @@ def _ssh_target(config, instance):
 
 
 def _ssh_targets(config, region):
-    """Return a list of indexed SSH targets for a given region"""
+    """Fetch a list of indexed SSH targets for a given region."""
 
     def add_index(target_cur, target_prv):
         if target_prv and target_cur.name == target_prv.name:
@@ -89,6 +90,93 @@ def _ssh_targets(config, region):
     targets_renamed = [change_name(target) for target in targets_indexed]
 
     return targets_renamed
+
+
+def _ssh_config_header(config):
+    """Return a `config`-based header for the ssh_config"""
+    return f"# BEGIN [{config.config_key}]"
+
+
+def _ssh_config_footer(config):
+    """Return a `config`-based footer for the ssh_config"""
+    return f"# END [{config.config_key}]"
+
+
+def _writer(config):
+    """Return a callable 'writer' object that can be used for outputting the config."""
+
+    class FileWriter():
+        def __init__(self):
+            self.lines = []
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, ex_type, ex_value, ex_traceback):
+            if ex_type or ex_value or ex_traceback:
+                print(
+                    f"An error occured. Write to {config.output_file} aborted.")
+                return
+
+            print(
+                f"Preparing to write {len(self.lines)} lines to {config.output_file}.."
+            )
+
+            if os.path.exists(config.output_file):
+                with open(config.output_file, "r") as f:
+                    current_content = f.read()
+            else:
+                current_content = ""
+
+            header = _ssh_config_header(config)
+            footer = _ssh_config_footer(config)
+
+            section_pattern = re.compile(
+                f"{re.escape(header)}.*?{re.escape(footer)}",
+                re.DOTALL
+            )
+
+            section_data = "\n".join(self.lines) + "\n"
+
+            if section_pattern.search(current_content):
+                print(
+                    f"{config.config_key} section exists. Replacing generated content.."
+                )
+
+                new_content = section_pattern.sub(
+                    section_data,
+                    current_content
+                )
+            else:
+                print(
+                    f"{config.config_key} section doesn't exist. Appending a new section.."
+                )
+
+                new_content = f"{current_content}{section_data}"
+
+            with open(config.output_file, "w") as f:
+                print("Committing changes..")
+                f.write(new_content)
+
+            print(f"Done.")
+
+        def __call__(self, line):
+            self.lines.append(line)
+
+    class StdoutWriter():
+        def __enter__(self):
+            return self
+
+        def __exit__(self, type, value, traceback):
+            pass
+
+        def __call__(self, line):
+            print(line)
+
+    if config.output_file:
+        return FileWriter()
+    else:
+        return StdoutWriter()
 
 
 def _parse_config(*args):
@@ -133,6 +221,9 @@ def _parse_config(*args):
     output_group.add_argument("-k", "--config-key",
                               help="Use an explicit key to identify this 'config'. Falls back to AWS_PROFILE, then 'default'.",
                               **env_value("AWS_PROFILE", default="default"))
+    output_group.add_argument("-f", "--output-file",
+                              help=("Specify an output file location. Overwrites relevant `config-key` section "
+                                    "in the file, if it exists. Appends otherwise."))
 
     # SSH
     ssh_group = parser.add_argument_group("SSH")
@@ -154,26 +245,27 @@ def main(*args):
     """Main function"""
     config = _parse_config(*args)
 
-    print(f"# BEGIN [{config.config_key}]")
-    print(f"# Generated automatically by `{os.path.basename(__file__)}`.")
-    print(f"")
+    with _writer(config) as out:
+        out(_ssh_config_header(config))
+        out(f"# Generated automatically by `{os.path.basename(__file__)}`.")
+        out(f"")
 
-    for region in config.region:
-        print(f"## {region}")
-        print("")
+        for region in config.region:
+            out(f"## {region}")
+            out("")
 
-        for target in _ssh_targets(config, region):
-            print(f"### {target.id}")
-            print(f"Host {target.name}")
-            print(f"\tHostName {target.host_name}")
-            if target.user:
-                print(f"\tUser {target.user}")
-            if not target.strict_host_key_checking:
-                print(f"\tStrictHostKeyChecking no")
-                print(f"\tUserKnownHostsFile=/dev/null")
-            print("")
+            for target in _ssh_targets(config, region):
+                out(f"### {target.id}")
+                out(f"Host {target.name}")
+                out(f"\tHostName {target.host_name}")
+                if target.user:
+                    out(f"\tUser {target.user}")
+                if not target.strict_host_key_checking:
+                    out(f"\tStrictHostKeyChecking no")
+                    out(f"\tUserKnownHostsFile=/dev/null")
+                out("")
 
-    print(f"# END [{config.config_key}]")
+        out(_ssh_config_footer(config))
 
 
 if __name__ == "__main__":
