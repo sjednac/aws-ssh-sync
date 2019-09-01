@@ -2,6 +2,13 @@
 
 Generate `ssh_config` files, based on current EC2 state.
 
+## Features
+
+* Connect to one or more regions at once.
+* Name instances using tags and index any duplicates (e.g. autoscaling groups).
+* Skip strict host checking, if needed (e.g. internal autoscaling groups).
+* Write to `stdout` or a [master file with config-key substitution](#file-output). Useful for working with tools, that don't support the `Include` directive.
+
 ## Usage
 
 Using a virtual [pipenv](https://github.com/pypa/pipenv) environment is recommended, but not strictly required. If you have all [dependencies](Pipfile) present, you can launch the script directly.
@@ -33,7 +40,7 @@ To extend your `~/.ssh/config`, add the following line:
 Include config.d/*
 ```
 
-### Working with a single config file
+### <a name="file-output"></a>Working with a single config file
 
 Splitting config into multiple, small files keeps things elegant and clean - you should probably stick to that, if you can. 
 
