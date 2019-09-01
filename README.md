@@ -7,7 +7,11 @@ Generate `ssh_config` files, based on current EC2 state.
 * Connect to one or more regions at once.
 * Name hosts using tags or instance ids. Index name duplicates (e.g. in autoscaling groups) using instance launch time order.
 * Use public or private IPs.
-* Skip strict host checking, if needed (e.g. internal autoscaling groups).
+* Set various SSH params:
+    * Skip strict host checking, if needed (e.g. internal autoscaling groups).
+    * Provide a server alive interval to keep the connection from timing out.
+    * Use custom identity files.
+    * ...
 * Write to `stdout` or a [master file with config-key substitution](#file-output). Useful for working with tools, that don't support the `Include` directive.
 
 ## Usage
