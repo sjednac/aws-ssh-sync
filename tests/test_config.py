@@ -22,16 +22,19 @@ def test_default_config_to_stdout(ec2_stub, ec2_region_name, capsys, monkeypatch
                         {
                             "InstanceId": "i-1",
                             "PrivateIpAddress": "192.168.0.1",
+                            "LaunchTime": "2019-01-01 09:00:00+00:00",
                             "Tags": []
                         },
                         {
                             "InstanceId": "i-2",
                             "PrivateIpAddress": "192.168.0.2",
+                            "LaunchTime": "2018-01-01 09:00:00+00:00",
                             "Tags": [{"Key": "Name", "Value": "clusterfoo"}]
                         },
                         {
                             "InstanceId": "i-3",
                             "PrivateIpAddress": "192.168.0.3",
+                            "LaunchTime": "2017-01-01 09:00:00+00:00",
                             "Tags": [{"Key": "Name", "Value": "clusterfoo"}]
                         }
                     ]
@@ -51,14 +54,14 @@ def test_default_config_to_stdout(ec2_stub, ec2_region_name, capsys, monkeypatch
 
 ## {ec2_region_name}
 
-### i-2
+### i-3
 Host clusterfoo0
-\tHostName 192.168.0.2
+\tHostName 192.168.0.3
 \tUser ec2-user
 
-### i-3
+### i-2
 Host clusterfoo1
-\tHostName 192.168.0.3
+\tHostName 192.168.0.2
 \tUser ec2-user
 
 ### i-1
@@ -85,11 +88,13 @@ def test_extended_config_to_stdout(ec2_stub, ec2_region_name, capsys):
                         {
                             "InstanceId": "i-1",
                             "PrivateIpAddress": "192.168.0.1",
+                            "LaunchTime": "2018-01-01 09:00:00+00:00",
                             "Tags": [{"Key": "Name", "Value": "servicenode"}]
                         },
                         {
                             "InstanceId": "i-2",
                             "PrivateIpAddress": "192.168.0.2",
+                            "LaunchTime": "2019-01-01 09:00:00+00:00",
                             "Tags": [{"Key": "Name", "Value": "servicenode"}]
                         }
                     ]

@@ -9,11 +9,10 @@ import sys
 from argparse import ArgumentParser, SUPPRESS
 from collections import namedtuple
 from functools import reduce
-from operator import attrgetter
 
 SSHTarget = namedtuple(
     'SSHTarget',
-    'id name name_index host_name user strict_host_key_checking'
+    'id launch_time name name_index host_name user strict_host_key_checking'
 )
 
 
@@ -52,6 +51,7 @@ def _ssh_target(config, instance):
 
     return SSHTarget(
         id=instance['InstanceId'],
+        launch_time=instance['LaunchTime'],
         name=name(instance),
         name_index=None,
         host_name=instance['PrivateIpAddress'],
@@ -84,7 +84,7 @@ def _ssh_targets(config, region):
 
     targets_raw = [_ssh_target(config, instance)
                    for instance in _ec2_instances(config, region)]
-    targets_sorted = sorted(targets_raw, key=attrgetter('name'))
+    targets_sorted = sorted(targets_raw, key=lambda t: (t.name, t.launch_time))
     targets_indexed = reduce(lambda acc, target: acc + [add_index(target, acc[-1] if len(acc) > 0 else None)],
                              targets_sorted, [])
     targets_renamed = [change_name(target) for target in targets_indexed]

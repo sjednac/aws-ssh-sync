@@ -23,16 +23,19 @@ def _file_requests(ec2_stub, ec2_region_name, monkeypatch):
                         {
                             "InstanceId": "i-1",
                             "PrivateIpAddress": "192.168.0.1",
+                            "LaunchTime": "2017-01-01 09:00:00+00:00",
                             "Tags": []
                         },
                         {
                             "InstanceId": "i-2",
                             "PrivateIpAddress": "192.168.0.2",
+                            "LaunchTime": "2018-01-01 09:00:00+00:00",
                             "Tags": [{"Key": "Name", "Value": "clusterfoo"}]
                         },
                         {
                             "InstanceId": "i-3",
                             "PrivateIpAddress": "192.168.0.3",
+                            "LaunchTime": "2019-01-01 09:00:00+00:00",
                             "Tags": [{"Key": "Name", "Value": "clusterfoo"}]
                         }
                     ]
