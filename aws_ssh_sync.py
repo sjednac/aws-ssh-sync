@@ -12,7 +12,7 @@ from functools import reduce
 
 SSHTarget = namedtuple(
     'SSHTarget',
-    'id launch_time name name_index host user strict_host_key_checking'
+    'id launch_time name name_index host user identity_file strict_host_key_checking'
 )
 
 
@@ -69,6 +69,7 @@ def _ssh_target(config, instance):
         name_index=None,
         host=host(instance),
         user=config.user,
+        identity_file=config.identity_file,
         strict_host_key_checking=not config.skip_strict_host_checking
     )
 
@@ -252,6 +253,9 @@ def _parse_config(*args):
     ssh_group.add_argument("-U", "--user",
                            help="Sign in as user.",
                            default="ec2-user")
+    ssh_group.add_argument("-I", "--identity-file",
+                           help="Use specific identity file.",
+                           default=None)
     ssh_group.add_argument("-S", "--skip-strict-host-checking",
                            help="Skip strict host key checking and ignore any entries in the `known_hosts` file.",
                            action="store_true",
@@ -279,6 +283,8 @@ def main(*args):
                 out(f"\tHostName {target.host}")
                 if target.user:
                     out(f"\tUser {target.user}")
+                if target.identity_file:
+                    out(f"\tIdentityFile {target.identity_file}")
                 if not target.strict_host_key_checking:
                     out(f"\tStrictHostKeyChecking no")
                     out(f"\tUserKnownHostsFile=/dev/null")

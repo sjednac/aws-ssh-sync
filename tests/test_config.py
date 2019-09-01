@@ -118,6 +118,7 @@ def test_extended_config_to_stdout(ec2_stub, ec2_region_name, capsys):
         "-k", "test_key",
         "-P", "test_prefix_",
         "-U", "tester",
+        "-I", "~/.ssh/id_rsa.test",
         "-S"
     )
 
@@ -134,6 +135,7 @@ def test_extended_config_to_stdout(ec2_stub, ec2_region_name, capsys):
 Host test_prefix_publicnode0
 \tHostName 11.11.11.11
 \tUser tester
+\tIdentityFile ~/.ssh/id_rsa.test
 \tStrictHostKeyChecking no
 \tUserKnownHostsFile=/dev/null
 
@@ -141,6 +143,7 @@ Host test_prefix_publicnode0
 Host test_prefix_publicnode1
 \tHostName 22.22.22.22
 \tUser tester
+\tIdentityFile ~/.ssh/id_rsa.test
 \tStrictHostKeyChecking no
 \tUserKnownHostsFile=/dev/null
 
