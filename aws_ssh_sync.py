@@ -37,7 +37,7 @@ def _ec2_instances(config, region):
     return instance_lists_flatten
 
 
-def _ssh_target(config, instance):
+def _ssh_target(config, region, instance):
     """Make an SSH target from an EC2 instance"""
 
     def name(instance):
@@ -46,10 +46,13 @@ def _ssh_target(config, instance):
 
         base_name = next(iterator, instance['InstanceId'])
 
+        if config.region_prefix:
+            base_name = f"{region}-{base_name}"
+
         if config.name_prefix:
-            return f"{config.name_prefix}{base_name}"
-        else:
-            return base_name
+            base_name = f"{config.name_prefix}{base_name}"
+
+        return base_name
 
     def host(instance):
         public_addr = instance["PublicIpAddress"] if "PublicIpAddress" in instance else None
@@ -100,7 +103,7 @@ def _ssh_targets(config, region):
         fields['name'] = f"{target.name}{target.name_index}"
         return SSHTarget(**fields)
 
-    targets_raw = [_ssh_target(config, instance)
+    targets_raw = [_ssh_target(config, region, instance)
                    for instance in _ec2_instances(config, region)]
     targets_filtered = [target for target in targets_raw if target.host]
     targets_sorted = sorted(
@@ -259,9 +262,13 @@ def _parse_config(*args):
 
     # SSH
     ssh_group = parser.add_argument_group("SSH")
+    ssh_group.add_argument("-R", "--region-prefix",
+                           help="Add a region prefix to all SSH host names.",
+                           default=False,
+                           action="store_true")
     ssh_group.add_argument("-P", "--name-prefix",
-                           help="Add a global name prefix to all SSH hosts.",
-                           metavar="PREFIX",
+                           help="Add a string prefix to all SSH host names.",
+                           metavar="PREF",
                            default="")
     ssh_group.add_argument("-U", "--user",
                            help="Sign in as user.",
