@@ -228,44 +228,50 @@ def _parse_config(*args):
     # AWS
     aws_group = parser.add_argument_group("AWS")
     aws_group.add_argument("-p", "--profile",
-                           help="Use specific AWS profile. Falls back to AWS_PROFILE, then 'default'.",
+                           help="Use a specific AWS profile. Falls back to AWS_PROFILE, then 'default'.",
                            **env_value("AWS_PROFILE", default="default"))
     aws_group.add_argument("-r", "--region",
                            help="Connect to region(s). Falls back to AWS_REGION.",
                            nargs="+",
                            **env_value("AWS_REGION", map_env_value=lambda x: [x]))
+    aws_group.add_argument("-f", "--ec2-filter-name",
+                           help=("Define a name filter for the EC2 instance query. Use '*' as a wildcard. Chaining multiple "
+                                 "filters works as an 'OR' operator."),
+                           metavar="FILTER",
+                           nargs="+",
+                           default=None)
     aws_group.add_argument("-a", "--address",
                            help="Define how EC2 address resolution should work.",
                            default="public_private",
                            choices=["public_private", "public", "private"])
-    aws_group.add_argument("-f", "--ec2-filter-name",
-                           help="Define a 'name' filter for the EC2 instance query. Use '*' as a wildcard.",
-                           metavar="FILTER",
-                           nargs="+",
-                           default=None)
 
     # Output
     output_group = parser.add_argument_group("Output")
     output_group.add_argument("-k", "--config-key",
                               help="Use an explicit key to identify this 'config'. Falls back to AWS_PROFILE, then 'default'.",
+                              metavar="KEY",
                               **env_value("AWS_PROFILE", default="default"))
     output_group.add_argument("-o", "--output-file",
+                              metavar="FILE",
                               help=("Specify an output file location. Overwrites relevant `config-key` section "
-                                    "in the file, if it exists. Appends otherwise."))
+                                    "in the file, if it exists. Appends a new section otherwise."))
 
     # SSH
     ssh_group = parser.add_argument_group("SSH")
     ssh_group.add_argument("-P", "--name-prefix",
-                           help="Add a prefix to all host identifiers.",
+                           help="Add a global name prefix to all SSH hosts.",
+                           metavar="PREFIX",
                            default="")
     ssh_group.add_argument("-U", "--user",
                            help="Sign in as user.",
                            default="ec2-user")
     ssh_group.add_argument("-I", "--identity-file",
                            help="Use specific identity file.",
+                           metavar="FILE",
                            default=None)
     ssh_group.add_argument("-A", "--server-alive-interval",
-                           help="Provide a ServerAliveInterval value.",
+                           help="Provide a ServerAliveInterval in seconds.",
+                           metavar="SECS",
                            default=None)
     ssh_group.add_argument("-S", "--skip-strict-host-checking",
                            help="Skip strict host key checking and ignore any entries in the `known_hosts` file.",
