@@ -5,7 +5,8 @@ Generate `ssh_config` files, based on current EC2 state.
 ## Features
 
 * Connect to one or more regions at once.
-* Name hosts using tags or instance ids. Index name duplicates (e.g. in autoscaling groups) using instance launch time order.
+* Filter EC2 instances by name. Useful for including relevant nodes only or for creating separate config sets for the same environment (e.g. use a different `User` for different nodes).
+* Identify hosts using tags or instance IDs. Index duplicates (e.g. in autoscaling groups) using instance launch time.
 * Use public or private IPs.
 * Set various SSH params:
     * Skip strict host checking, if needed (e.g. internal autoscaling groups).

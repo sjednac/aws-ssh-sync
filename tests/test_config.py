@@ -79,7 +79,8 @@ def test_extended_config_to_stdout(ec2_stub, ec2_region_name, capsys):
         "describe_instances",
         expected_params={
             "Filters": [
-                {"Name": "instance-state-name", "Values": ["running"]}
+                {"Name": "instance-state-name", "Values": ["running"]},
+                {'Name': 'tag:Name', 'Values': ['*node*']}
             ]
         },
         service_response={
@@ -113,7 +114,9 @@ def test_extended_config_to_stdout(ec2_stub, ec2_region_name, capsys):
     )
 
     aws_ssh_sync.main(
+        "-p", "default",
         "-r", ec2_region_name,
+        "-f", "*node*",
         "-a", "public",
         "-k", "test_key",
         "-P", "test_prefix_",

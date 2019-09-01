@@ -77,7 +77,7 @@ def test_output_to_new_file(_file_requests, _file_requests_config, tmp_path):
     target_file = tmp_path / "ssh_test.conf"
 
     aws_ssh_sync.main(
-        "-f", str(target_file)
+        "-o", str(target_file)
     )
 
     assert target_file.read_text() == _file_requests_config
@@ -89,7 +89,7 @@ def test_output_to_existing_file(_file_requests, _file_requests_config, tmp_path
     target_file.write_text("foo\nbar\n")
 
     aws_ssh_sync.main(
-        "-f", str(target_file)
+        "-o", str(target_file)
     )
 
     assert target_file.read_text() == f"foo\nbar\n{_file_requests_config}"
@@ -111,7 +111,7 @@ bar
 """)
 
     aws_ssh_sync.main(
-        "-f", str(target_file)
+        "-o", str(target_file)
     )
 
     assert target_file.read_text() == f"""\

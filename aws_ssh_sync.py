@@ -22,11 +22,13 @@ def _ec2_instances(config, region):
 
     ec2 = session.client("ec2", region_name=region)
 
-    response = ec2.describe_instances(
-        Filters=[
-            {"Name": "instance-state-name", "Values": ["running"]}
-        ]
-    )
+    filters = [{"Name": "instance-state-name", "Values": ["running"]}]
+    if config.ec2_filter_name and len(config.ec2_filter_name) > 0:
+        filters.append(
+            {'Name': 'tag:Name', 'Values': config.ec2_filter_name}
+        )
+
+    response = ec2.describe_instances(Filters=filters)
 
     instance_lists = [r["Instances"]
                       for r in response["Reservations"] if "Instances" in r]
@@ -233,16 +235,21 @@ def _parse_config(*args):
                            nargs="+",
                            **env_value("AWS_REGION", map_env_value=lambda x: [x]))
     aws_group.add_argument("-a", "--address",
-                           help="Define how EC2 address resoultuon should work.",
+                           help="Define how EC2 address resolution should work.",
                            default="public_private",
                            choices=["public_private", "public", "private"])
+    aws_group.add_argument("-f", "--ec2-filter-name",
+                           help="Define a 'name' filter for the EC2 instance query. Use '*' as a wildcard.",
+                           metavar="FILTER",
+                           nargs="+",
+                           default=None)
 
     # Output
     output_group = parser.add_argument_group("Output")
     output_group.add_argument("-k", "--config-key",
                               help="Use an explicit key to identify this 'config'. Falls back to AWS_PROFILE, then 'default'.",
                               **env_value("AWS_PROFILE", default="default"))
-    output_group.add_argument("-f", "--output-file",
+    output_group.add_argument("-o", "--output-file",
                               help=("Specify an output file location. Overwrites relevant `config-key` section "
                                     "in the file, if it exists. Appends otherwise."))
 
