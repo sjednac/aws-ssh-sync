@@ -12,7 +12,7 @@ from functools import reduce
 
 SSHTarget = namedtuple(
     'SSHTarget',
-    'id launch_time name name_index host user identity_file server_alive_interval strict_host_key_checking'
+    'id launch_time name name_index host user identity_file identities_only server_alive_interval strict_host_key_checking'
 )
 
 
@@ -72,6 +72,7 @@ def _ssh_target(config, instance):
         host=host(instance),
         user=config.user,
         identity_file=config.identity_file,
+        identities_only=not config.no_identities_only,
         server_alive_interval=config.server_alive_interval,
         strict_host_key_checking=not config.skip_strict_host_checking
     )
@@ -273,6 +274,10 @@ def _parse_config(*args):
                            help="Provide a ServerAliveInterval in seconds.",
                            metavar="SECS",
                            default=None)
+    ssh_group.add_argument("-O", "--no-identities-only",
+                           help="Don't add an IdentitiesOnly directive.",
+                           action="store_true",
+                           default=False)
     ssh_group.add_argument("-S", "--skip-strict-host-checking",
                            help="Skip strict host key checking and ignore any entries in the `known_hosts` file.",
                            action="store_true",
@@ -302,6 +307,8 @@ def main(*args):
                     out(f"\tUser {target.user}")
                 if target.identity_file:
                     out(f"\tIdentityFile {target.identity_file}")
+                if target.identities_only:
+                    out(f"\tIdentitiesOnly yes")
                 if target.server_alive_interval:
                     out(f"\tServerAliveInterval {target.server_alive_interval}")
                 if not target.strict_host_key_checking:

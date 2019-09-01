@@ -59,16 +59,19 @@ def test_default_config_to_stdout(ec2_stub, ec2_region_name, capsys, monkeypatch
 Host clusterfoo0
 \tHostName 192.168.0.3
 \tUser ec2-user
+\tIdentitiesOnly yes
 
 ### i-2
 Host clusterfoo1
 \tHostName 192.168.0.2
 \tUser ec2-user
+\tIdentitiesOnly yes
 
 ### i-1
 Host i-1
 \tHostName 42.42.42.42
 \tUser ec2-user
+\tIdentitiesOnly yes
 
 # END [default]
 """
@@ -123,6 +126,7 @@ def test_extended_config_to_stdout(ec2_stub, ec2_region_name, capsys):
         "-U", "tester",
         "-I", "~/.ssh/id_rsa.test",
         "-A", "100",
+        "-O",
         "-S"
     )
 

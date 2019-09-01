@@ -57,16 +57,19 @@ def _file_requests_config(ec2_region_name):
 Host clusterfoo0
 \tHostName 192.168.0.2
 \tUser ec2-user
+\tIdentitiesOnly yes
 
 ### i-3
 Host clusterfoo1
 \tHostName 192.168.0.3
 \tUser ec2-user
+\tIdentitiesOnly yes
 
 ### i-1
 Host i-1
 \tHostName 192.168.0.1
 \tUser ec2-user
+\tIdentitiesOnly yes
 
 # END [default]
 """
