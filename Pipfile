@@ -9,6 +9,7 @@ autopep8 = "*"
 pytest = "*"
 setuptools = "*"
 wheel = "*"
+twine = "*"
 
 [packages]
 boto3 = "==1.9"

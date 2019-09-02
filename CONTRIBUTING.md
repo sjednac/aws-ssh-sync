@@ -4,8 +4,6 @@
 
 There are plenty of [options](https://linux.die.net/man/5/ssh_config), that are not covered by the script yet. If you want to add a new feature, please read ahead. Bugfixes, documentation improvements and general suggestions are also more than welcome!
 
-You can :star: the project on **GitHub**, if you want to show your support.
-
 ## General workflow
 
 Unless you're fixing a typo or want to fix something trivial, please follow these steps:
@@ -31,3 +29,11 @@ pipenv run autopep8 -ir .
 ```bash
 pipenv run pytest
 ```
+
+5. If you want to check the script in action, you can use the following command: 
+
+```bash
+pipenv run python -m aws_ssh_sync.main
+```
+
+6. If you change any dependencies, then it might be a good idea to build and install a `pip` package locally. Check instructions in [RELEASE.md](RELEASE.md) for more details.

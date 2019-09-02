@@ -17,18 +17,19 @@ Generate `ssh_config` files, based on current [Amazon EC2](https://aws.amazon.co
     * ...
 * Write to `stdout` or a [master file with config-key substitution](#file-output). Useful for working with tools, that don't support the `Include` directive.
 
+## Installation
+
+You can install the latest package using `pip`:
+
+```bash
+pip install aws-ssh-sync
+```
+
 ## Usage
-
-Using a virtual [pipenv](https://github.com/pypa/pipenv) environment is recommended, but not strictly required. If you have all [dependencies](Pipfile) present, you can launch the script directly.
-
-To start the virtual environment:
-```
-pipenv shell
-```
 
 To get the full list of options:
 ```bash
-./aws_ssh_sync.py --help
+aws_ssh_sync --help
 ```
 
 ### Preview
@@ -36,7 +37,7 @@ To get the full list of options:
 The easiest way to get a **preview** of the current config in AWS is to print the output directly to `stdout`:
 
 ```bash
-./aws_ssh_sync.py --profile <profile> --region <region>
+aws_ssh_sync --profile <profile> --region <region>
 ```
 
 ### Utilising the 'Include' directive
@@ -44,7 +45,7 @@ The easiest way to get a **preview** of the current config in AWS is to print th
 If you want to **isolate** the generated config, you can write it to a dedicated file, and `Include` it in the main config. The base use-case is as follows:
 
 ```bash
-./aws_ssh_sync.py --profile <profile> --region <region> > ~/.ssh/config.d/<some_file>
+aws_ssh_sync --profile <profile> --region <region> > ~/.ssh/config.d/<some_file>
 ```
 
 To extend your `~/.ssh/config`, add the following line:
@@ -60,7 +61,7 @@ Splitting config into multiple, small files keeps things elegant and clean - you
 Unfortunatelly, some tools may still have trouble with the `Include` directive itself. If you want to use a single file (e.g. `~/.ssh/config`) for keeping all configuration, then you can specify the `--output-file` together with a `--config-key`:
 
 ```bash
-./aws_ssh_sync.py --profile <profile> --region <region> --config-key <key> --output-file <path>
+aws_ssh_sync --profile <profile> --region <region> --config-key <key> --output-file <path>
 ``` 
 
 Behaviour:

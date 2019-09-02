@@ -6,11 +6,10 @@ import os
 import re
 import sys
 
+from . import __version__
 from argparse import ArgumentParser, SUPPRESS
 from collections import namedtuple
 from functools import reduce
-
-__version__ = "0.0.1"
 
 SSHTarget = namedtuple(
     'SSHTarget',
@@ -294,13 +293,13 @@ def _parse_config(*args):
     return parser.parse_args(list(args))
 
 
-def main(*args):
-    """Main function"""
+def make_ssh_config(*args):
+    """Make an ssh_config setup."""
     config = _parse_config(*args)
 
     with _writer(config) as out:
         out(_ssh_config_header(config))
-        out(f"# Generated automatically by `{os.path.basename(__file__)}`.")
+        out(f"# Generated automatically by `aws_ssh_sync`.")
         out(f"")
 
         for region in config.region:
@@ -327,5 +326,10 @@ def main(*args):
         out(_ssh_config_footer(config))
 
 
+def main():
+    """Main function"""
+    make_ssh_config(*sys.argv[1:])
+
+
 if __name__ == "__main__":
-    main(*sys.argv[1:])
+    main()

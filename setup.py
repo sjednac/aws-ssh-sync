@@ -16,8 +16,12 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/sbilinski/aws-ssh-sync",
-    packages=setuptools.find_packages(),
-    scripts=["aws_ssh_sync.py"],
+    packages=setuptools.find_namespace_packages(),
+    entry_points={
+        "console_scripts": [
+            "aws_ssh_sync = aws_ssh_sync.main:main"
+        ]
+    },
     install_requires=["boto3>=1.9"],
     classifiers=[
         "Topic :: System :: Networking",

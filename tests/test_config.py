@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import aws_ssh_sync
+from aws_ssh_sync.main import make_ssh_config
 
 
 def test_default_config_to_stdout(ec2_stub, ec2_region_name, capsys, monkeypatch):
@@ -44,14 +44,14 @@ def test_default_config_to_stdout(ec2_stub, ec2_region_name, capsys, monkeypatch
         }
     )
 
-    aws_ssh_sync.main()
+    make_ssh_config()
 
     out, err = capsys.readouterr()
 
     assert err == ""
     assert out == f"""\
 # BEGIN [default]
-# Generated automatically by `aws_ssh_sync.py`.
+# Generated automatically by `aws_ssh_sync`.
 
 ## {ec2_region_name}
 
@@ -116,7 +116,7 @@ def test_extended_config_to_stdout(ec2_stub, ec2_region_name, capsys):
         }
     )
 
-    aws_ssh_sync.main(
+    make_ssh_config(
         "-p", "default",
         "-r", ec2_region_name,
         "-f", "*node*",
@@ -136,7 +136,7 @@ def test_extended_config_to_stdout(ec2_stub, ec2_region_name, capsys):
     assert err == ""
     assert out == f"""\
 # BEGIN [test_key]
-# Generated automatically by `aws_ssh_sync.py`.
+# Generated automatically by `aws_ssh_sync`.
 
 ## {ec2_region_name}
 
@@ -177,7 +177,7 @@ def test_no_instances_to_stdout(ec2_stub, ec2_region_name, capsys):
         }
     )
 
-    aws_ssh_sync.main(
+    make_ssh_config(
         "-r", ec2_region_name
     )
 
@@ -186,7 +186,7 @@ def test_no_instances_to_stdout(ec2_stub, ec2_region_name, capsys):
     assert err == ""
     assert out == f"""\
 # BEGIN [default]
-# Generated automatically by `aws_ssh_sync.py`.
+# Generated automatically by `aws_ssh_sync`.
 
 ## {ec2_region_name}
 
