@@ -27,7 +27,7 @@ pip install aws-ssh-sync
 
 ## Usage
 
-To get the full list of options:
+To get a full list of options:
 ```bash
 aws_ssh_sync --help
 ```
