@@ -10,6 +10,8 @@ from argparse import ArgumentParser, SUPPRESS
 from collections import namedtuple
 from functools import reduce
 
+__version__ = "0.0.1"
+
 SSHTarget = namedtuple(
     'SSHTarget',
     'id launch_time name name_index host user identity_file identities_only server_alive_interval strict_host_key_checking'
@@ -222,8 +224,7 @@ def _parse_config(*args):
     parser.add_argument("-v", "--version",
                         help="Print current version number and exit.",
                         action="version",
-                        # TODO: Manage version in a more sensible way
-                        version="0.1.0")
+                        version=__version__)
     parser.add_argument("-h", "--help",
                         help="Print this help message and exit.",
                         action="help",
