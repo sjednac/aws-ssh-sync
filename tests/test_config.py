@@ -128,7 +128,8 @@ def test_extended_config_to_stdout(ec2_stub, ec2_region_name, capsys):
         "-I", "~/.ssh/id_rsa.test",
         "-A", "100",
         "-O",
-        "-S"
+        "-S",
+        "-X", "ssh ec2-user@jumphost nc %h %p"
     )
 
     out, err = capsys.readouterr()
@@ -148,6 +149,7 @@ Host test-prefix-{ec2_region_name}-publicnode0
 \tServerAliveInterval 100
 \tStrictHostKeyChecking no
 \tUserKnownHostsFile=/dev/null
+\tProxyCommand ssh ec2-user@jumphost nc %h %p
 
 ### i-2
 Host test-prefix-{ec2_region_name}-publicnode1
@@ -157,6 +159,7 @@ Host test-prefix-{ec2_region_name}-publicnode1
 \tServerAliveInterval 100
 \tStrictHostKeyChecking no
 \tUserKnownHostsFile=/dev/null
+\tProxyCommand ssh ec2-user@jumphost nc %h %p
 
 # END [test_key]
 """

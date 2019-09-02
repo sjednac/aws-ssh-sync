@@ -14,6 +14,7 @@ Generate `ssh_config` files, based on current [Amazon EC2](https://aws.amazon.co
     * Skip strict host checking, if needed. Can be useful when working with (internal) autoscaling groups.
     * Provide a server alive interval to keep the connection from timing out.
     * Use custom identity files.
+    * Setup a proxy command for utilizing jump hosts.
     * ...
 * Write to `stdout` or a [master file with config-key substitution](#file-output). Useful for working with tools, that don't support the `Include` directive.
 

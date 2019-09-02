@@ -13,7 +13,7 @@ from functools import reduce
 
 SSHTarget = namedtuple(
     'SSHTarget',
-    'id launch_time name name_index host user identity_file identities_only server_alive_interval strict_host_key_checking'
+    'id launch_time name name_index host user identity_file identities_only server_alive_interval strict_host_key_checking proxy_command'
 )
 
 
@@ -78,7 +78,8 @@ def _ssh_target(config, region, instance):
         identity_file=config.identity_file,
         identities_only=not config.no_identities_only,
         server_alive_interval=config.server_alive_interval,
-        strict_host_key_checking=not config.skip_strict_host_checking
+        strict_host_key_checking=not config.skip_strict_host_checking,
+        proxy_command=config.proxy_command
     )
 
 
@@ -289,6 +290,9 @@ def _parse_config(*args):
                            help="Skip strict host key checking and ignore any entries in the `known_hosts` file.",
                            action="store_true",
                            default=False)
+    ssh_group.add_argument("-X", "--proxy-command",
+                           help="Provide a ProxyCommand directive.",
+                           default=None)
 
     return parser.parse_args(list(args))
 
@@ -321,6 +325,8 @@ def make_ssh_config(*args):
                 if not target.strict_host_key_checking:
                     out(f"\tStrictHostKeyChecking no")
                     out(f"\tUserKnownHostsFile=/dev/null")
+                if target.proxy_command:
+                    out(f"\tProxyCommand {target.proxy_command}")
                 out("")
 
         out(_ssh_config_footer(config))
