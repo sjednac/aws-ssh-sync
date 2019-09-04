@@ -31,6 +31,17 @@ To remove old build artifacts:
 pipenv run ./setup.py clean --all
 ```
 
+## Update the version
+
+1. Create a tag for the current version: 
+
+```bash
+git tag `python -m aws_ssh_sync.main -v`
+git push --tags
+```
+
+2. Bump the `__version__` in the main [module](aws_ssh_sync/__init__.py)
+
 ## References
 
 * [Packaging Python Projects](https://packaging.python.org/tutorials/packaging-projects/)
