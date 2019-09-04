@@ -6,11 +6,13 @@ There are plenty of [options](https://linux.die.net/man/5/ssh_config), that are 
 
 ## General workflow
 
-Unless you're fixing a typo or want to fix something trivial, please follow these steps:
+Unless you're fixing a typo or want to fix something trivial, please stick to the following steps:
 
-1. Create an [issue](/issues) in **GitHub**, describing the problem or the feature request, so that we can disuss it first.
-1. If you want to work on the issue yourself, please state so in the description or add a comment.
-1. Fork the repository, commit your changes (check the brief [coding standards](#Coding-standards) section below) and open a pull request.
+1. Create an [issue](/issues) in **GitHub**, describing the problem or the feature request, so that we can disuss it and track the change.
+1. If you want to work on the issue yourself, please state so in the description or add a relevant comment.
+1. Fork the repository, commit your changes (check the brief [coding standards](#Coding-standards) section below) and open a pull request:
+    - Try to follow [the seven golden rules](https://chris.beams.io/posts/git-commit/) when crafting your commit message(s).
+    - In case you wonder about existing commits: :sparkles:, :bookmark: and so on, actually have a [meaning](https://gitmoji.carloscuesta.me/). That being said, as long as the patch makes sense, it's not a strict requirement to follow it. Just make sure that the commit description is descriptive enough.
 
 ## Coding standards
 
