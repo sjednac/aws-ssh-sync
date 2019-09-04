@@ -1,5 +1,8 @@
 # SSH config synchronisation for AWS
 
+[![Build Status](https://travis-ci.org/sbilinski/aws-ssh-sync.svg?branch=master)](https://travis-ci.org/sbilinski/aws-ssh-sync) 
+[![PyPI version](https://badge.fury.io/py/aws-ssh-sync.svg)](https://badge.fury.io/py/aws-ssh-sync)
+
 Generate `ssh_config` files, based on current [Amazon EC2](https://aws.amazon.com/ec2/) state.
 
 ## Features
