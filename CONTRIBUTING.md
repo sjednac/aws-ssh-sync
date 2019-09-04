@@ -30,6 +30,8 @@ pipenv run autopep8 -ir .
 pipenv run pytest
 ```
 
+**NOTE**: You'll need to create a test profile using [test_credentials.sh](test_credentials.sh).
+
 5. If you want to check the script in action, you can use the following command: 
 
 ```bash
