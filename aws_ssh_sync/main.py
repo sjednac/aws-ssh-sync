@@ -263,34 +263,34 @@ def _parse_config(*args):
 
     # SSH
     ssh_group = parser.add_argument_group("SSH")
-    ssh_group.add_argument("-R", "--region-prefix",
+    ssh_group.add_argument("--region-prefix",
                            help="Add a region prefix to all SSH host names.",
                            default=False,
                            action="store_true")
-    ssh_group.add_argument("-P", "--name-prefix",
+    ssh_group.add_argument("--name-prefix",
                            help="Add a string prefix to all SSH host names.",
                            metavar="PREF",
                            default="")
-    ssh_group.add_argument("-U", "--user",
+    ssh_group.add_argument("--user",
                            help="Sign in as user.",
                            default="ec2-user")
-    ssh_group.add_argument("-I", "--identity-file",
+    ssh_group.add_argument("--identity-file",
                            help="Use specific identity file.",
                            metavar="FILE",
                            default=None)
-    ssh_group.add_argument("-A", "--server-alive-interval",
+    ssh_group.add_argument("--server-alive-interval",
                            help="Provide a ServerAliveInterval in seconds.",
                            metavar="SECS",
                            default=None)
-    ssh_group.add_argument("-O", "--no-identities-only",
+    ssh_group.add_argument("--no-identities-only",
                            help="Don't add an IdentitiesOnly directive.",
                            action="store_true",
                            default=False)
-    ssh_group.add_argument("-S", "--skip-strict-host-checking",
+    ssh_group.add_argument("--skip-strict-host-checking",
                            help="Skip strict host key checking and ignore any entries in the `known_hosts` file.",
                            action="store_true",
                            default=False)
-    ssh_group.add_argument("-X", "--proxy-command",
+    ssh_group.add_argument("--proxy-command",
                            help="Provide a ProxyCommand directive.",
                            default=None)
 

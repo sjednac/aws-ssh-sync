@@ -117,19 +117,19 @@ def test_extended_config_to_stdout(ec2_stub, ec2_region_name, capsys):
     )
 
     make_ssh_config(
-        "-p", "default",
-        "-r", ec2_region_name,
-        "-f", "*node*",
-        "-a", "public",
-        "-k", "test_key",
-        "-P", "test-prefix-",
-        "-R",
-        "-U", "tester",
-        "-I", "~/.ssh/id_rsa.test",
-        "-A", "100",
-        "-O",
-        "-S",
-        "-X", "ssh ec2-user@jumphost nc %h %p"
+        "--profile", "default",
+        "--region", ec2_region_name,
+        "--ec2-filter-name", "*node*",
+        "--address", "public",
+        "--config-key", "test_key",
+        "--region-prefix",
+        "--name-prefix", "test-prefix-",
+        "--user", "tester",
+        "--identity-file", "~/.ssh/id_rsa.test",
+        "--server-alive-interval", "100",
+        "--no-identities-only",
+        "--skip-strict-host-checking",
+        "--proxy-command", "ssh ec2-user@jumphost nc %h %p"
     )
 
     out, err = capsys.readouterr()
