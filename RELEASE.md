@@ -24,6 +24,13 @@ To publish the package to [pypi](https://pypi.org/project/aws-ssh-sync/):
 pipenv run python -m twine upload --repository-url https://upload.pypi.org/legacy/ dist/*
 ```
 
+## Cleanup
+
+To remove old build artifacts:
+```bash
+pipenv run ./setup.py clean --all
+```
+
 ## References
 
 * [Packaging Python Projects](https://packaging.python.org/tutorials/packaging-projects/)

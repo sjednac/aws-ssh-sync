@@ -10,6 +10,7 @@ pytest = "*"
 setuptools = "*"
 wheel = "*"
 twine = "*"
+setupext-janitor = "*"
 
 [packages]
 boto3 = "==1.9"
