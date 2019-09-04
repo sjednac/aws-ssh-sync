@@ -5,6 +5,8 @@ python:
   - "3.7-dev"
   - "3.8-dev"
   - "nightly"
+before_install:
+  - ./test_credentials.sh
 install:
   - pip install pipenv
   - pipenv install

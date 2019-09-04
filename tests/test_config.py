@@ -5,7 +5,7 @@ from aws_ssh_sync.main import make_ssh_config
 
 def test_default_config_to_stdout(ec2_stub, ec2_region_name, capsys, monkeypatch):
 
-    monkeypatch.setenv("AWS_PROFILE", "default")
+    monkeypatch.setenv("AWS_PROFILE", "testprofile")
     monkeypatch.setenv("AWS_REGION", ec2_region_name)
 
     ec2_stub.add_response(
@@ -50,7 +50,7 @@ def test_default_config_to_stdout(ec2_stub, ec2_region_name, capsys, monkeypatch
 
     assert err == ""
     assert out == f"""\
-# BEGIN [default]
+# BEGIN [testprofile]
 # Generated automatically by `aws_ssh_sync`.
 
 ## {ec2_region_name}
@@ -73,7 +73,7 @@ Host i-1
 \tUser ec2-user
 \tIdentitiesOnly yes
 
-# END [default]
+# END [testprofile]
 """
 
 
@@ -117,7 +117,7 @@ def test_extended_config_to_stdout(ec2_stub, ec2_region_name, capsys):
     )
 
     make_ssh_config(
-        "--profile", "default",
+        "--profile", "testprofile",
         "--region", ec2_region_name,
         "--ec2-filter-name", "*node*",
         "--address", "public",
@@ -165,7 +165,10 @@ Host test-prefix-{ec2_region_name}-publicnode1
 """
 
 
-def test_no_instances_to_stdout(ec2_stub, ec2_region_name, capsys):
+def test_no_instances_to_stdout(ec2_stub, ec2_region_name, capsys, monkeypatch):
+
+    monkeypatch.setenv("AWS_PROFILE", "testprofile")
+    monkeypatch.setenv("AWS_REGION", ec2_region_name)
 
     ec2_stub.add_response(
         "describe_instances",
@@ -180,18 +183,16 @@ def test_no_instances_to_stdout(ec2_stub, ec2_region_name, capsys):
         }
     )
 
-    make_ssh_config(
-        "-r", ec2_region_name
-    )
+    make_ssh_config()
 
     out, err = capsys.readouterr()
 
     assert err == ""
     assert out == f"""\
-# BEGIN [default]
+# BEGIN [testprofile]
 # Generated automatically by `aws_ssh_sync`.
 
 ## {ec2_region_name}
 
-# END [default]
+# END [testprofile]
 """

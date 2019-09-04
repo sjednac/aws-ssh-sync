@@ -7,7 +7,7 @@ from aws_ssh_sync.main import make_ssh_config
 
 @pytest.fixture
 def _file_requests(ec2_stub, ec2_region_name, monkeypatch):
-    monkeypatch.setenv("AWS_PROFILE", "default")
+    monkeypatch.setenv("AWS_PROFILE", "testprofile")
     monkeypatch.setenv("AWS_REGION", ec2_region_name)
 
     ec2_stub.add_response(
@@ -49,7 +49,7 @@ def _file_requests(ec2_stub, ec2_region_name, monkeypatch):
 @pytest.fixture
 def _file_requests_config(ec2_region_name):
     return f"""\
-# BEGIN [default]
+# BEGIN [testprofile]
 # Generated automatically by `aws_ssh_sync`.
 
 ## {ec2_region_name}
@@ -72,7 +72,7 @@ Host i-1
 \tUser ec2-user
 \tIdentitiesOnly yes
 
-# END [default]
+# END [testprofile]
 """
 
 
@@ -105,11 +105,11 @@ def test_output_to_existing_file_with_section(_file_requests, _file_requests_con
     target_file.write_text("""\
 foo
 
-# BEGIN [default]
+# BEGIN [testprofile]
 
 Some old stuff, that should be replaced.
 
-# END [default]
+# END [testprofile]
 
 bar
 """)
