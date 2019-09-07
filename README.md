@@ -75,3 +75,7 @@ Behaviour:
 * If a section identified by `--config-key` exists, then it will be replaced. 
 * If no `--config-key` was found, then a new section will be appended to the file.
 * **No backup file is created at the moment.**
+
+## References
+
+* [Origin, motivation and acknowledgements](http://mintbeans.com/aws-ssh-sync/) - blog post.
