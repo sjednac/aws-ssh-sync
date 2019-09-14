@@ -13,7 +13,7 @@ from functools import reduce
 
 SSHTarget = namedtuple(
     'SSHTarget',
-    'id launch_time name name_index host user identity_file identities_only server_alive_interval strict_host_key_checking proxy_command'
+    'id launch_time name name_index host port user identity_file identities_only server_alive_interval strict_host_key_checking proxy_command'
 )
 
 
@@ -74,6 +74,7 @@ def _ssh_target(config, region, instance):
         name=name(instance),
         name_index=None,
         host=host(instance),
+        port=config.port,
         user=config.user,
         identity_file=config.identity_file,
         identities_only=not config.no_identities_only,
@@ -271,6 +272,10 @@ def _parse_config(*args):
                            help="Add a string prefix to all SSH host names.",
                            metavar="PREF",
                            default="")
+    ssh_group.add_argument("--port",
+                           help="Use an explicit port.",
+                           metavar="PORT",
+                           default=None)
     ssh_group.add_argument("--user",
                            help="Sign in as user.",
                            default="ec2-user")
@@ -314,6 +319,8 @@ def make_ssh_config(*args):
                 out(f"### {target.id}")
                 out(f"Host {target.name}")
                 out(f"\tHostName {target.host}")
+                if target.port:
+                    out(f"\tPort {target.port}")
                 if target.user:
                     out(f"\tUser {target.user}")
                 if target.identity_file:

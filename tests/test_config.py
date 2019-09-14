@@ -124,6 +124,7 @@ def test_extended_config_to_stdout(ec2_stub, ec2_region_name, capsys):
         "--config-key", "test_key",
         "--region-prefix",
         "--name-prefix", "test-prefix-",
+        "--port", "22",
         "--user", "tester",
         "--identity-file", "~/.ssh/id_rsa.test",
         "--server-alive-interval", "100",
@@ -144,6 +145,7 @@ def test_extended_config_to_stdout(ec2_stub, ec2_region_name, capsys):
 ### i-1
 Host test-prefix-{ec2_region_name}-publicnode0
 \tHostName 11.11.11.11
+\tPort 22
 \tUser tester
 \tIdentityFile ~/.ssh/id_rsa.test
 \tServerAliveInterval 100
@@ -154,6 +156,7 @@ Host test-prefix-{ec2_region_name}-publicnode0
 ### i-2
 Host test-prefix-{ec2_region_name}-publicnode1
 \tHostName 22.22.22.22
+\tPort 22
 \tUser tester
 \tIdentityFile ~/.ssh/id_rsa.test
 \tServerAliveInterval 100
