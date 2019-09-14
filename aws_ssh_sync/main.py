@@ -98,7 +98,7 @@ def _ssh_targets(config, region):
 
     def change_name(target):
         if target.id in target.name:
-            # Don't alter the name, if ID is already of it, as it's explicit enough.
+            # Don't alter the name, if instance ID is already in it, as it's explicit enough.
             return target
 
         fields = target._asdict()
